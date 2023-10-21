@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 pipeline {
     agent any
 
@@ -32,3 +33,6 @@ pipeline {
         }
     }
 }
+=======
+
+>>>>>>> 1fa5730 (Jenkinsfile)
