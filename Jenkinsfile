@@ -6,7 +6,7 @@ pipeline {
             steps {
                 echo "Getting Project from Git"
                 script {
-                    checkout([$class: 'GitSCM', branches: [[name: 'master']], userRemoteConfigs: [[url: 'https://github.com/Tasnimnaji/5WIN-G1-projet3-.git']])
+                    checkout([$class: 'GitSCM', branches: [[name: 'master']], userRemoteConfigs: [[url: 'https://github.com/Tasnimnaji/5WIN-G1-projet3-.git']]]) // Added a closing square bracket here
                 }
             }
         }
@@ -30,6 +30,5 @@ pipeline {
                 }
             }
         }
-
     }
 }
