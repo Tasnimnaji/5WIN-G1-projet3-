@@ -1,35 +1,24 @@
 pipeline {
     agent any
 
+    tools{
+        nodejs 'nodeJsPackage'
+    }
+    
     stages {
-        stage('GIT') {
+        stage('GITHUB') {
             steps {
                 echo "Getting Project from Git"
-                script {
-                    checkout([$class: 'GitSCM', branches: [[name: 'master']], userRemoteConfigs: [[url: 'https://github.com/Tasnimnaji/5WIN-G1-projet3-.git']])
+                checkout scm
+            }
+        }
+
+        stage('BUILD + TEST BACKEND') {
+            steps {
+                dir('DevOps_Project') {
+                    script {
+                        sh 'mvn clean install'
+                    }
                 }
-            }
+            }            
         }
-
-        stage('MVN CLEAN') {
-            steps {
-                sh 'mvn clean'
-            }
-        }
-
-        stage('MVN COMPILE') {
-            steps {
-                sh 'mvn compile'
-            }
-        }
-
-        stage('MVN SONARQUBE') {
-            steps {
-                withSonarQubeEnv('admin') {
-                    sh 'mvn sonar:sonar -Dsonar.login=sonar'
-                }
-            }
-        }
-
-    }
-}
