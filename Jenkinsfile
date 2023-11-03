@@ -25,7 +25,7 @@ pipeline {
 
         stage('MVN SONARQUBE') {
             steps {
-                withSonarQubeEnv('admin') {
+                withSonarQubeEnv('SonarQube Scanner') {
                     sh 'mvn sonar:sonar -Dsonar.login=sonar'
                 }
             }
