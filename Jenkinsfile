@@ -26,7 +26,7 @@ pipeline {
         stage('MVN SONARQUBE') {
             steps {
                 withSonarQubeEnv('SonarQube Scanner') {
-                    sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar-Dsonar.host.url=http://http://192.168.33.10:9000'
+                    sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar-Dsonar.host.url=http://192.168.33.10:9000'
                 }
             }
         }
