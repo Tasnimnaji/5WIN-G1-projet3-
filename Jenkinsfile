@@ -26,6 +26,13 @@ pipeline {
                 }
             }
         }
+        stage('MVN TEST') {
+                    steps {
+                        dir('tpAchatProject') {
+                            sh 'mvn test'
+                        }
+                    }
+                }
 
         stage('MVN SONARQUBE') {
             steps {
