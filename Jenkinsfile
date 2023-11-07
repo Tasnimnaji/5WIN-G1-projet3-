@@ -51,7 +51,7 @@ pipeline {
             }
         }
 
-         stage('Building image (Backend)') {
+         stage('Build & Push Docker Image (Backend)') {
                     steps {
                         script {
                             def dockerImage = 'tasnimnaji99/tasnimnaji_5win_g1_pprojet3:tasnim'
