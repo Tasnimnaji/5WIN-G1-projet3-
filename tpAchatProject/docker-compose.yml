@@ -22,7 +22,7 @@ services:
       - "8082:8082"
     environment:
       SPRING_APPLICATION_JSON: '{
-          "SPRING.DATASOURCE.URL": "jdbc:mysql://mysql:3306/devops?createDatabaseIfNotExist=true",
+          "SPRING.DATASOURCE.URL": "jdbc:mysql://mysql:3306/tpachato?createDatabaseIfNotExist=true",
           "SPRING.DATASOURCE.USERNAME": "root",
           "SPRING.DATASOURCE.PASSWORD": null
           "SPRING.JPA.PROPERTIES.HIBERNATE.DIALECT" : "org.hibernate.dialect.MySQL5InnoDBDialect",
