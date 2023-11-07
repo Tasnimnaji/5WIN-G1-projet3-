@@ -33,6 +33,13 @@ pipeline {
                         }
                     }
                 }
+         stage('MVN DEPLOY') {
+                            steps {
+                                dir('tpAchatProject') {
+                                    sh 'mvn deploy'
+                                }
+                            }
+                        }
 
         stage('MVN SONARQUBE') {
             steps {
