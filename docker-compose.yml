@@ -4,18 +4,16 @@ services:
     image: mysql:latest
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD:
-      MYSQL_DATABASE:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+      MYSQL_DATABASE: tpachato
     ports:
       - "3306:3306"
-
     volumes:
       - db:/var/lib/mysql
 
-
   backend:
     depends_on:
-      - mysqldb
+      - mysql
     image: tasnimnaji99/tasnimnaji_5win_g1_pprojet3:tasnim
     restart: on-failure
     ports:
@@ -24,12 +22,11 @@ services:
       SPRING_APPLICATION_JSON: '{
           "SPRING.DATASOURCE.URL": "jdbc:mysql://mysql:3306/tpachato?createDatabaseIfNotExist=true",
           "SPRING.DATASOURCE.USERNAME": "root",
-          "SPRING.DATASOURCE.PASSWORD": null
+          "SPRING.DATASOURCE.PASSWORD": "",
           "SPRING.JPA.PROPERTIES.HIBERNATE.DIALECT" : "org.hibernate.dialect.MySQL5InnoDBDialect",
           "SPRING.JPA.HIBERNATE.DDL-AUTO" : "update"
       }'
     stdin_open: true
     tty: true
 volumes:
-  db :
-
+  db:
