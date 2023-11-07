@@ -75,6 +75,20 @@ pipeline {
                         }
                     }
                 }
+         stage('Deploy Prometheus') {
+                     steps {
+                         script {
+                             deployDockerContainer('prometheus', 'prom/prometheus', '-p 9090:9090')
+                         }
+                     }
+                 }
 
+          stage('Deploy Grafana') {
+                              steps {
+                                  script {
+                                      deployDockerContainer('grafana', 'grafana/grafana', '-p 3000:3000')
+                                  }
+                              }
+                          }
     }
 }
