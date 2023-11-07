@@ -11,21 +11,21 @@ pipeline {
             }
         }
 
-        stage('MVN CLEAN') {
-            steps {
-                dir('tpAchatProject') {
-                    sh 'mvn clean'
-                }
-            }
-        }
+       // stage('MVN CLEAN') {
+            //steps {
+                //dir('tpAchatProject') {
+                   // sh 'mvn clean'
+               // }
+           // }
+        //}
 
-        stage('MVN COMPILE') {
-            steps {
-                dir('tpAchatProject') {
-                    sh 'mvn compile'
-                }
-            }
-        }
+        //stage('MVN COMPILE') {
+           // steps {
+               // dir('tpAchatProject') {
+                //    sh 'mvn compile'
+               // }
+          //  }
+        //}
         stage('MVN TEST') {
                     steps {
                         dir('tpAchatProject') {
