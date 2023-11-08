@@ -7,7 +7,7 @@ services:
       - grafana-storage:/var/lib/grafana
     user: "472:472"
     ports:
-      - "3000:3000"
+      - "3001:3000"
     restart: unless-stopped
 
 volumes:
