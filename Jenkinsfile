@@ -75,20 +75,14 @@ pipeline {
                         }
                     }
                 }
-         stage('Deploy Prometheus') {
+        
+         stage('Deploy Grafana and Prometheus') {
                      steps {
                          script {
-                             deployDockerContainer('prometheus', 'prom/prometheus', '-p 9090:9090')
+                             sh 'docker-compose -f docker-compose-prometheus.yml -f docker-compose-grafana.yml up -d'
                          }
                      }
                  }
 
-          stage('Deploy Grafana') {
-                              steps {
-                                  script {
-                                      deployDockerContainer('grafana', 'grafana/grafana', '-p 3000:3000')
-                                  }
-                              }
-                          }
     }
 }
