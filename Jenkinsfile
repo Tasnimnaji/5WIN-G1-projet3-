@@ -75,7 +75,7 @@ pipeline {
                         }
                     }
                 }
-        
+
          stage('Deploy Grafana and Prometheus') {
                      steps {
                          script {
