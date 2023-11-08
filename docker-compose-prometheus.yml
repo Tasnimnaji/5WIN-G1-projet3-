@@ -2,10 +2,10 @@ version: '3'
 services:
   my_prometheus:
     image: prom/prometheus
-    container_name: prometheus
+    container_name: my_prometheus_new
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
     ports:
-      - "9091:9090"
+      - "9090:9090"
