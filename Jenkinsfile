@@ -72,7 +72,7 @@ pipeline {
                                         script {
                                             def subject = "Test And Build Check"
                                             def body = "BUILD GOOD"
-                                            def to = 'raedking779@gmail.com'
+                                            def to = 'hachembenarab@gmail.com'
 
                                             mail(
                                                 subject: subject,
