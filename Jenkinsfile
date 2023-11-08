@@ -67,7 +67,23 @@ pipeline {
                             }
                         }
                     }
-                }
+                     post {
+                                    success {
+                                        script {
+                                            def subject = "Test And Build Check"
+                                            def body = "BUILD GOOD"
+                                            def to = 'raedking779@gmail.com'
+
+                                            mail(
+                                                subject: subject,
+                                                body: body,
+                                                to: to,
+                                            )
+                                        }
+                                    }
+
+                     }
+         }
 
          stage('Deploy Back') {
                     steps {
@@ -75,7 +91,7 @@ pipeline {
                             sh 'docker-compose -f docker-compose.yml up -d'
                         }
                     }
-                }
+         }
 
          stage('Deploy Grafana and Prometheus') {
                      steps {
@@ -83,21 +99,7 @@ pipeline {
                              sh 'docker-compose -f docker-compose-prometheus.yml -f docker-compose-grafana.yml up -d'
                          }
                      }
-                 }
-          post {
-                         success {
-                             script {
-                                 def subject = "Test And Build Check"
-                                 def body = "BUILD GOOD"
-                                 def to = 'raedking779@gmail.com'
+         }
 
-                                 mail(
-                                     subject: subject,
-                                     body: body,
-                                     to: to,
-                                 )
-                             }
-
-                         }
     }
 }
