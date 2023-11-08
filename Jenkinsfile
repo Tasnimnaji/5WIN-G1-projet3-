@@ -81,6 +81,19 @@ pipeline {
                                             )
                                         }
                                     }
+                                    failure {
+                                                        script {
+                                                            def subject = "Build Failure - ${currentBuild.fullDisplayName}"
+                                                            def body = "The build has failed in the Jenkins pipeline. Please investigate and take appropriate action."
+                                                            def to = 'hachembenarab@gmail.com'
+
+                                                            mail(
+                                                                subject: subject,
+                                                                body: body,
+                                                                to: to,
+                                                            )
+                                                        }
+                                    }
 
                      }
          }
