@@ -19,7 +19,7 @@ services:
   app:
     depends_on:
       - mysqldb
-    image: 161jmt3600/produit
+    image: 191jmt4418/produit
     container_name: projetproduit
     restart: unless-stopped
     ports:
