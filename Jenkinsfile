@@ -45,7 +45,7 @@ pipeline {
 
         stage('Build Frontend') {
             steps {
-                dir('crud-tuto-front) {
+                dir('crud-tuto-front') {
                     script {
                         sh 'npm install'
                         sh 'ng build '
