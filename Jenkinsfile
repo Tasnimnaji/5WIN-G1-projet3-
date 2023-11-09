@@ -13,22 +13,22 @@ pipeline {
             }
         }
 
-       // stage('MVN CLEAN') {
-            //steps {
-                //dir('tpAchatProject') {
-                   // sh 'mvn clean'
-               // }
-           // }
-        //}
+       stage('MVN CLEAN') {
+            steps {
+                dir('tpAchatProject') {
+                    sh 'mvn clean'
+                }
+            }
+        }
 
-        //stage('MVN COMPILE') {
-           // steps {
-               // dir('tpAchatProject') {
-                //    sh 'mvn compile'
-               // }
-          //  }
-        //}
-        stage('MVN TEST') {
+        stage('MVN COMPILE') {
+            steps {
+               dir('tpAchatProject') {
+                    sh 'mvn compile'
+                }
+           }
+        }
+        /*stage('MVN TEST') {
                     steps {
                         dir('tpAchatProject') {
                             sh 'mvn test'
@@ -40,7 +40,7 @@ pipeline {
                                 dir('tpAchatProject') {
                                     sh 'mvn deploy'
                                 }
-                            }
+                            }*/
 
        stage('Build Frontend') {
                    steps {
@@ -66,7 +66,7 @@ pipeline {
          stage('Build & Push Docker Image (Backend)') {
                     steps {
                         script {
-                            def dockerImage = 'tasnimnaji99/tasnimnaji_5win_g1_pprojet3:Back'
+                            def dockerImage = 'tasnimnaji99/tasnimnaji_5win_g1_pprojet3:tasnim'
                             def imageExists = sh(script: "docker inspect --type=image $dockerImage", returnStatus: true) == 0
 
                             if (!imageExists) {
@@ -128,21 +128,21 @@ pipeline {
                      }
          }
 
-         stage('Deploy Back') {
+         /*stage('Deploy Back') {
                     steps {
                         script {
                             sh 'docker-compose -f docker-compose.yml up -d'
                         }
                     }
-         }
+         }*/
 
-         stage('Deploy Grafana and Prometheus') {
+        /* stage('Deploy Grafana and Prometheus') {
                      steps {
                          script {
                              sh 'docker-compose -f docker-compose-prometheus.yml -f docker-compose-grafana.yml up -d'
                          }
                      }
-         }
+         }*/
 
     }
 }
