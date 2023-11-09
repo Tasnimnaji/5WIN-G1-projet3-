@@ -1,6 +1,19 @@
 pipeline {
     agent any
-    
+
+    stages {
+        stage('Install Node.js and Dependencies') {
+            steps {
+                script {
+                    // Use the tool step to install Node.js
+                    def nodejsInstallation = tool 'NodeJS'
+                    env.PATH = "${nodejsInstallation}/bin:${env.PATH}"
+
+                    // Install npm dependencies
+                    sh 'npm install'
+                }
+            }
+        }
 
     stages {
         stage('GIT') {
