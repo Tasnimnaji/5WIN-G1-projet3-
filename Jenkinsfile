@@ -1,5 +1,9 @@
 pipeline {
     agent any
+     tools {
+            nodejs 'NodeJSInstaller'
+        }
+
 
     stages {
         stage('GIT') {
@@ -11,39 +15,53 @@ pipeline {
             }
         }
 
-        stage('Backend - Build, Test, Deploy') {
+        stage('MVN CLEAN') {
             steps {
                 dir('tpAchatProject') {
-                    script {
-                        // Maven build
-                        sh 'mvn clean compile test deploy'
-                    }
+                    sh 'mvn clean'
                 }
             }
         }
 
-        stage('Frontend - Build') {
+        stage('MVN COMPILE') {
             steps {
-                dir('crud-tuto-front') {
+                dir('tpAchatProject') {
+                    sh 'mvn compile'
+                }
+            }
+        }
+
+        stage('MVN TEST') {
+            steps {
+                dir('tpAchatProject') {
+                    sh 'mvn test'
+                }
+            }
+        }
+
+        stage('MVN DEPLOY') {
+            steps {
+                dir('tpAchatProject') {
+                    sh 'mvn deploy'
+                }
+            }
+        }
+
+        stage('Build Frontend') {
+            steps {
+                dir('crud-tuto-front) {
                     script {
-                        // Install Node.js and npm
-                        sh 'apt-get update && apt-get install -y nodejs npm'
-
-                        // Install project dependencies
                         sh 'npm install'
-
-                        // Build frontend
-                        sh 'ng build'
+                        sh 'ng build '
                     }
                 }
             }
         }
 
-        stage('SonarQube Analysis') {
+        stage('MVN SONARQUBE') {
             steps {
                 dir('tpAchatProject') {
                     withSonarQubeEnv('SonarQube Scanner') {
-                        // SonarQube analysis
                         sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar -Dsonar.host.url=http://192.168.33.10:9000 -Dsonar.login=admin -Dsonar.password=sonar'
                     }
                 }
@@ -54,13 +72,10 @@ pipeline {
             steps {
                 script {
                     def dockerImage = 'tasnimnaji99/tasnimnaji_5win_g1_pprojet3:tasnim'
-
-                    // Check if the Docker image already exists
                     def imageExists = sh(script: "docker inspect --type=image $dockerImage", returnStatus: true) == 0
 
                     if (!imageExists) {
                         dir('tpAchatProject') {
-                            // Build and push Docker image
                             sh "docker build -t $dockerImage ."
                             sh "docker push $dockerImage"
                         }
@@ -71,20 +86,30 @@ pipeline {
             }
             post {
                 success {
-                    // Email notification on success
-                    emailext (
-                        subject: "Build & Push Docker Image (Backend) - Success",
-                        body: "The build was successful. Congratulations!",
-                        to: 'tasnimneji93@gmail.com'
-                    )
+                    script {
+                        def subject = "Build & Push Docker Image (Backend)"
+                        def body = "The build was successful. Congratulations!"
+                        def to = 'tasnimneji93@gmail.com'
+
+                        mail(
+                            subject: subject,
+                            body: body,
+                            to: to,
+                        )
+                    }
                 }
                 failure {
-                    // Email notification on failure
-                    emailext (
-                        subject: "Build Failure - ${currentBuild.fullDisplayName}",
-                        body: "The build failed. Please check the console output for more details.",
-                        to: 'tasnimneji93@gmail.com'
-                    )
+                    script {
+                        def subject = "Build Failure - ${currentBuild.fullDisplayName}"
+                        def body = "The build failed. Please check the console output for more details."
+                        def to = 'tasnimneji93@gmail.com'
+
+                        mail(
+                            subject: subject,
+                            body: body,
+                            to: to,
+                        )
+                    }
                 }
             }
         }
@@ -93,13 +118,10 @@ pipeline {
             steps {
                 script {
                     def dockerImage = 'tasnimnaji99/tasnimnaji_5win_g1_pprojet3:front'
-
-                    // Check if the Docker image already exists
                     def imageExists = sh(script: "docker inspect --type=image $dockerImage", returnStatus: true) == 0
 
                     if (!imageExists) {
                         dir('crud-tuto-front') {
-                            // Build and push Docker image
                             sh "docker build -t $dockerImage ."
                             sh "docker push $dockerImage"
                         }
@@ -113,7 +135,6 @@ pipeline {
         stage('Deploy Back') {
             steps {
                 script {
-                    // Deploy backend using Docker Compose
                     sh 'docker-compose -f docker-compose.yml up -d'
                 }
             }
@@ -122,7 +143,6 @@ pipeline {
         stage('Deploy Grafana and Prometheus') {
             steps {
                 script {
-                    // Deploy Grafana and Prometheus using Docker Compose
                     sh 'docker-compose -f docker-compose-prometheus.yml -f docker-compose-grafana.yml up -d'
                 }
             }
