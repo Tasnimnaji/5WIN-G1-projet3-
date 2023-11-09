@@ -1,10 +1,11 @@
-FROM nginx:latest
+# stage 1
+FROM node:14.21.3-alpine as node
+WORKDIR /tpAchatProject
+COPY . .
+RUN npm install
+RUN npm run build --prod
 
-WORKDIR /crud-tuto-front
-
+# stage 2
+FROM nginx:alpine
+COPY --from=node /tpAchatProject/dist/crudtuto-Front /usr/share/nginx/html
 EXPOSE 80
-
-COPY dist/crudtuto-Front /usr/share/nginx/html
-
-CMD ["nginx", "-g", "daemon off;"]
-
