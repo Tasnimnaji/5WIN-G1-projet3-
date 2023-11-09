@@ -27,3 +27,5 @@ L
 crud-tuto-front/package.json,5\7\5775b4b7bbde5bc18620487f0b3b4ba22ec1f6ac
 Q
 !crud-tuto-front/tsconfig.app.json,1\6\16e4cd5e0204b6e1f8b5d996a509bdc0d9139388
+J
+docker-compose-grafana.yml,c\2\c232027e2948632c292ca1190cc81281e83bf3e3

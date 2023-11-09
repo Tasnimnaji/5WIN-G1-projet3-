@@ -28,11 +28,6 @@ services:
       }'
     stdin_open: true
     tty: true
-  frontend:
-    image: tasnimnaji99/tasnimnaji_5win_g1_pprojet3:front
-    ports:
-      - "80:80"
-    depends_on:
-      - backend
+
 volumes:
   db:
