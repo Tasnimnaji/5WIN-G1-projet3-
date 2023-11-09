@@ -11,39 +11,18 @@ pipeline {
             }
         }
 
-        stage('MVN CLEAN') {
+        stage('Backend - Build, Test, Deploy') {
             steps {
                 dir('tpAchatProject') {
-                    sh 'mvn clean'
+                    script {
+                        // Maven build
+                        sh 'mvn clean compile test deploy'
+                    }
                 }
             }
         }
 
-        stage('MVN COMPILE') {
-            steps {
-                dir('tpAchatProject') {
-                    sh 'mvn compile'
-                }
-            }
-        }
-
-        stage('MVN TEST') {
-            steps {
-                dir('tpAchatProject') {
-                    sh 'mvn test'
-                }
-            }
-        }
-
-        stage('MVN DEPLOY') {
-            steps {
-                dir('tpAchatProject') {
-                    sh 'mvn deploy'
-                }
-            }
-        }
-
-        stage('Build Frontend') {
+        stage('Frontend - Build') {
             steps {
                 dir('crud-tuto-front') {
                     script {
@@ -52,16 +31,19 @@ pipeline {
 
                         // Install project dependencies
                         sh 'npm install'
-                        sh 'ng build '
+
+                        // Build frontend
+                        sh 'ng build'
                     }
                 }
             }
         }
 
-        stage('MVN SONARQUBE') {
+        stage('SonarQube Analysis') {
             steps {
                 dir('tpAchatProject') {
                     withSonarQubeEnv('SonarQube Scanner') {
+                        // SonarQube analysis
                         sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar -Dsonar.host.url=http://192.168.33.10:9000 -Dsonar.login=admin -Dsonar.password=sonar'
                     }
                 }
@@ -72,10 +54,13 @@ pipeline {
             steps {
                 script {
                     def dockerImage = 'tasnimnaji99/tasnimnaji_5win_g1_pprojet3:tasnim'
+
+                    // Check if the Docker image already exists
                     def imageExists = sh(script: "docker inspect --type=image $dockerImage", returnStatus: true) == 0
 
                     if (!imageExists) {
                         dir('tpAchatProject') {
+                            // Build and push Docker image
                             sh "docker build -t $dockerImage ."
                             sh "docker push $dockerImage"
                         }
@@ -86,30 +71,20 @@ pipeline {
             }
             post {
                 success {
-                    script {
-                        def subject = "Build & Push Docker Image (Backend)"
-                        def body = "The build was successful. Congratulations!"
-                        def to = 'tasnimneji93@gmail.com'
-
-                        mail(
-                            subject: subject,
-                            body: body,
-                            to: to,
-                        )
-                    }
+                    // Email notification on success
+                    emailext (
+                        subject: "Build & Push Docker Image (Backend) - Success",
+                        body: "The build was successful. Congratulations!",
+                        to: 'tasnimneji93@gmail.com'
+                    )
                 }
                 failure {
-                    script {
-                        def subject = "Build Failure - ${currentBuild.fullDisplayName}"
-                        def body = "The build failed. Please check the console output for more details."
-                        def to = 'tasnimneji93@gmail.com'
-
-                        mail(
-                            subject: subject,
-                            body: body,
-                            to: to,
-                        )
-                    }
+                    // Email notification on failure
+                    emailext (
+                        subject: "Build Failure - ${currentBuild.fullDisplayName}",
+                        body: "The build failed. Please check the console output for more details.",
+                        to: 'tasnimneji93@gmail.com'
+                    )
                 }
             }
         }
@@ -118,10 +93,13 @@ pipeline {
             steps {
                 script {
                     def dockerImage = 'tasnimnaji99/tasnimnaji_5win_g1_pprojet3:front'
+
+                    // Check if the Docker image already exists
                     def imageExists = sh(script: "docker inspect --type=image $dockerImage", returnStatus: true) == 0
 
                     if (!imageExists) {
                         dir('crud-tuto-front') {
+                            // Build and push Docker image
                             sh "docker build -t $dockerImage ."
                             sh "docker push $dockerImage"
                         }
@@ -135,6 +113,7 @@ pipeline {
         stage('Deploy Back') {
             steps {
                 script {
+                    // Deploy backend using Docker Compose
                     sh 'docker-compose -f docker-compose.yml up -d'
                 }
             }
@@ -143,6 +122,7 @@ pipeline {
         stage('Deploy Grafana and Prometheus') {
             steps {
                 script {
+                    // Deploy Grafana and Prometheus using Docker Compose
                     sh 'docker-compose -f docker-compose-prometheus.yml -f docker-compose-grafana.yml up -d'
                 }
             }
