@@ -1,11 +1,23 @@
-# stage 1
-FROM node:14.21.3-alpine as node
-WORKDIR /tpAchatProject
-COPY . .
-RUN npm install
-RUN npm run build --prod
+FROM node:14
 
-# stage 2
-FROM nginx:alpine
-COPY --from=node /tpAchatProject/dist/crudtuto-Front /usr/share/nginx/html
+WORKDIR /usr/src/tpAchatProject
+
+COPY package*.json ./
+
+
+RUN npm install -g @angular/cli
+
+
+RUN npm install
+
+
+COPY . .
+
+
+RUN ng build --prod
+
+
 EXPOSE 80
+
+
+CMD ["ng", "serve", "--host", "0.0.0.0", "--port", "80"]
