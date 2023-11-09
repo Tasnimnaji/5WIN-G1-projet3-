@@ -1,6 +1,6 @@
 FROM nginx:latest
 
-WORKDIR /crud-tuto-front
+WORKDIR /tpAchatProject
 
 EXPOSE 80
 
