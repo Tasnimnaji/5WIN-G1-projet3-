@@ -1,6 +1,6 @@
 FROM node:14
 
-WORKDIR /usr/src/tpAchatProject
+WORKDIR /tpAchatProject
 
 COPY package*.json ./
 
