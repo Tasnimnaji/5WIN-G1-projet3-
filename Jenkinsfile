@@ -66,7 +66,7 @@ pipeline {
          stage('Build & Push Docker Image (Backend)') {
                     steps {
                         script {
-                            def dockerImage = 'tasnimnaji99/tasnimnaji_5win_g1_pprojet3:tasnim'
+                            def dockerImage = 'tasnimnaji99/tasnimnaji_5win_g1_pprojet3:Back'
                             def imageExists = sh(script: "docker inspect --type=image $dockerImage", returnStatus: true) == 0
 
                             if (!imageExists) {
@@ -113,7 +113,7 @@ pipeline {
          stage('Build & Push Docker Image (Frontend)') {
                      steps {
                          script {
-                             def dockerImage = 'tasnimnaji99/devops_project_front'
+                             def dockerImage = 'tasnimnaji99/tasnimnaji_5win_g1_pprojet3:front'
                              def imageExists = sh(script: "docker inspect --type=image $dockerImage", returnStatus: true) == 0
 
                              if (!imageExists) {
@@ -126,7 +126,7 @@ pipeline {
                              }
                          }
                      }
-                 }
+         }
 
          stage('Deploy Back') {
                     steps {
