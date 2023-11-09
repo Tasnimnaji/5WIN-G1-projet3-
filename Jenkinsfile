@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     stages {
-            stage('Install Node.js and Dependencies') {
+           /* stage('Install Node.js and Dependencies') {
                         steps {
                             script {
                                 // Use the tool step to install Node.js
@@ -13,7 +13,7 @@ pipeline {
                                 sh 'npm install'
                             }
                         }
-                    }
+                    }*/
 
         stage('GIT') {
             steps {
@@ -123,7 +123,7 @@ pipeline {
             }
         }
 
-        stage('Build & Push Docker Image (Frontend)') {
+        /*stage('Build & Push Docker Image (Frontend)') {
             steps {
                 script {
                     def dockerImage = 'tasnimnaji99/tasnimnaji_5win_g1_pprojet3:front'
@@ -139,7 +139,7 @@ pipeline {
                     }
                 }
             }
-        }
+        }*/
 
         stage('Deploy Back') {
             steps {
