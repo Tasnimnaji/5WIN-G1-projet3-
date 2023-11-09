@@ -1,6 +1,6 @@
 pipeline {
     agent any
-   
+
     stages {
         stage('GIT') {
             steps {
@@ -45,7 +45,7 @@ pipeline {
 
         stage('Build Frontend') {
             steps {
-                dir('DevOps_Project_Front') {
+                dir('crud-tuto-front) {
                     script {
                         sh 'npm install'
                         sh 'ng build '
