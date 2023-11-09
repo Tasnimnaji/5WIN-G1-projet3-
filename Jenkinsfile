@@ -47,11 +47,8 @@ pipeline {
             steps {
                 dir('crud-tuto-front') {
                     script {
-                        // Ensure Jenkins user has permissions for apt-get
-                        sh 'sudo chown -R jenkins:jenkins /var/lib/apt/lists /var/cache/apt'
-
                         // Install Node.js and npm
-                        sh 'sudo apt-get update && sudo apt-get install -y nodejs npm'
+                        sh 'apt-get update && apt-get install -y nodejs npm'
 
                         // Install project dependencies
                         sh 'npm install'
