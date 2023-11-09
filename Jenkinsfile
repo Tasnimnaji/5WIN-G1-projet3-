@@ -70,8 +70,8 @@ pipeline {
                      post {
                                     success {
                                         script {
-                                            def subject = "Test And Build Check"
-                                            def body = "BUILD GOOD"
+                                            def subject = "Build & Push Docker Image (Backend)"
+                                            def body = "The build was successful. Congratulations!"
                                             def to = 'tasnimneji93@gmail.com'
 
                                             mail(
@@ -84,7 +84,7 @@ pipeline {
                                     failure {
                                                         script {
                                                             def subject = "Build Failure - ${currentBuild.fullDisplayName}"
-                                                            def body = "The build has failed in the Jenkins pipeline. Please investigate and take appropriate action."
+                                                            def body = "The build failed. Please check the console output for more details."
                                                             def to = 'tasnimneji93@gmail.com'
 
                                                             mail(
