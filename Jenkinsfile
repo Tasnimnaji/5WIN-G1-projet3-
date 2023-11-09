@@ -47,6 +47,10 @@ pipeline {
             steps {
                 dir('crud-tuto-front') {
                     script {
+                        // Install Node.js and npm
+                        sh 'apt-get update && apt-get install -y nodejs npm'
+
+                        // Install project dependencies
                         sh 'npm install'
                         sh 'ng build '
                     }
