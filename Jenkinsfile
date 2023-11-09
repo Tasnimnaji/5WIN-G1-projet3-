@@ -1,8 +1,6 @@
 pipeline {
     agent any
-    tools {
-        nodejs 'NodeJSInstaller'
-    }
+    
 
     stages {
         stage('GIT') {
