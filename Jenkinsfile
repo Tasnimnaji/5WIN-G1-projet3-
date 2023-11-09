@@ -56,7 +56,7 @@ pipeline {
             }
         }
 
-        stage('Build Frontend') {
+        /*stage('Build Frontend') {
             steps {
                 dir('crud-tuto-front') {
                     script {
@@ -65,7 +65,7 @@ pipeline {
                     }
                 }
             }
-        }
+        }*/
 
         stage('MVN SONARQUBE') {
             steps {
