@@ -72,7 +72,7 @@ pipeline {
                                         script {
                                             def subject = "Test And Build Check"
                                             def body = "BUILD GOOD"
-                                            def to = 'hachembenarab@gmail.com'
+                                            def to = 'tasnimneji93@gmail.com'
 
                                             mail(
                                                 subject: subject,
@@ -85,7 +85,7 @@ pipeline {
                                                         script {
                                                             def subject = "Build Failure - ${currentBuild.fullDisplayName}"
                                                             def body = "The build has failed in the Jenkins pipeline. Please investigate and take appropriate action."
-                                                            def to = 'hachembenarab@gmail.com'
+                                                            def to = 'tasnimneji93@gmail.com'
 
                                                             mail(
                                                                 subject: subject,
