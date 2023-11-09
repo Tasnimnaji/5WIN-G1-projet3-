@@ -1,0 +1,17 @@
+
+w
+java:S1488"\Immediately return this expression instead of assigning it to the temporary variable "list".(ˆìĞùúÿÿÿÿ
+u
+java:S1488+"_Immediately return this expression instead of assigning it to the temporary variable "produit".(ò‡§
+[
+java:S4684*"@Replace this persistent entity with a simple POJO or DTO object.(˜¾–áüÿÿÿÿ
+V	java:S125'"<This block of commented-out lines of code should be removed.(˜‡˜óüÿÿÿÿ
+V	java:S125/"<This block of commented-out lines of code should be removed.(À²üÿÿÿÿ
+V
+java:S46849"@Replace this persistent entity with a simple POJO or DTO object.(°€Ş
+V	java:S1256"<This block of commented-out lines of code should be removed.(ï¹œ‹úÿÿÿÿ
+Q	java:S125K"<This block of commented-out lines of code should be removed.(Ï‹ƒö
+A
+java:S1128"+Remove this unused import 'java.util.Date'.(¸…¼ü
+l
+java:S1128"QRemove this unused import 'org.springframework.format.annotation.DateTimeFormat'.(‡ˆôƒøÿÿÿÿ
