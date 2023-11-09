@@ -17,3 +17,13 @@ I
 tpAchatProject/Dockerfile,d\6\d6a310371a59b01722ac8d9533e4d7c1cefb6950
 ;
 Jenkinsfile,0\c\0c2c5c506cef0ed2d3ad2b7e45e97980b66f5520
+J
+crud-tuto-front/Dockerfile,2\c\2cb10c3a0b092f985c17ac35422fe7937b9f4dbb
+Q
+!crud-tuto-front/package-lock.json,3\6\3664383f5198668d82cd9472c77f3a1c51f74968
+B
+docker-compose.yml,3\5\35b8c13cf2eb2a194eada000eb310d65aed53b2a
+L
+crud-tuto-front/package.json,5\7\5775b4b7bbde5bc18620487f0b3b4ba22ec1f6ac
+Q
+!crud-tuto-front/tsconfig.app.json,1\6\16e4cd5e0204b6e1f8b5d996a509bdc0d9139388

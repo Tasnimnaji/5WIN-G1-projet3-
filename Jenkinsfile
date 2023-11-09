@@ -1,6 +1,8 @@
 pipeline {
     agent any
-
+  tools {
+        nodejs 'NodeJSInstaller'
+    }
     stages {
         stage('GIT') {
             steps {
@@ -39,7 +41,17 @@ pipeline {
                                     sh 'mvn deploy'
                                 }
                             }
-                        }
+
+       stage('Build Frontend') {
+                   steps {
+                       dir('DevOps_Project_Front') {
+                           script {
+                               sh 'npm install'
+                               sh 'ng build '
+                           }
+                       }
+                   }
+       }
 
         stage('MVN SONARQUBE') {
             steps {
@@ -97,6 +109,24 @@ pipeline {
 
                      }
          }
+
+         stage('Build & Push Docker Image (Frontend)') {
+                     steps {
+                         script {
+                             def dockerImage = 'tasnimnaji99/devops_project_front'
+                             def imageExists = sh(script: "docker inspect --type=image $dockerImage", returnStatus: true) == 0
+
+                             if (!imageExists) {
+                                 dir('crud-tuto-front') {
+                                     sh "docker build -t $dockerImage ."
+                                     sh "docker push $dockerImage"
+                                 }
+                             } else {
+                                 echo "Docker image $dockerImage already exists. Skipping the build and push steps."
+                             }
+                         }
+                     }
+                 }
 
          stage('Deploy Back') {
                     steps {
