@@ -1,38 +1,38 @@
 version: '3'
 services:
-  mysql-db:
+  mysql:
     image: mysql:latest
-    container_name: docker-compose-mysql-db
-    ports:
-      - "3307:3306"
+    restart: unless-stopped
     environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=achatdb
-    networks:
-      - my-network
-
-  spring-boot-app:
-    image: tasnimnaji99/tasnimnaji_5win_g1_projet3_back
-    container_name: docker-compose-spring-boot
+      MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+      MYSQL_DATABASE: tpachato
     ports:
-      - "8088:8089"
+      - "3306:3306"
+    volumes:
+      - db:/var/lib/mysql
+
+  backend:
     depends_on:
-      - mysql-db
+      - mysql
+    image: tasnimnaji99/tasnimnaji_5win_g1_pprojet3:tasnim
+    restart: on-failure
+    ports:
+      - "8082:8082"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://docker-compose-mysql-db:3306/achatdb?&createDatabaseIfNotExist=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=root
-    networks:
-      - my-network
-  angular-app:
-    image: tasnimnaji99/tasnimnaji_5win_g1_projet3_front
-    container_name: docker-compose-angular-app
+      SPRING_APPLICATION_JSON: '{
+          "SPRING.DATASOURCE.URL": "jdbc:mysql://mysql:3306/tpachato?createDatabaseIfNotExist=true",
+          "SPRING.DATASOURCE.USERNAME": "root",
+          "SPRING.DATASOURCE.PASSWORD": "",
+          "SPRING.JPA.PROPERTIES.HIBERNATE.DIALECT" : "org.hibernate.dialect.MySQL5InnoDBDialect",
+          "SPRING.JPA.HIBERNATE.DDL-AUTO" : "update"
+      }'
+    stdin_open: true
+    tty: true
+  frontend:
+    image: tasnimnaji99/tasnimnaji_5win_g1_pprojet3:front
     ports:
-      - "4200:80"
+      - "80:80"
     depends_on:
-      - spring-boot-app
-    networks:
-      - my-network
-
-networks:
-  my-network:
+      - backend
+volumes:
+  db:

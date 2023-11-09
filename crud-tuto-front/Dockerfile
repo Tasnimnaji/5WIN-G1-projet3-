@@ -1,18 +1,10 @@
-# Use a newer version of Node.js
-FROM node:18
+FROM nginx:latest
 
-WORKDIR /tpAchatProject
-
-COPY package*.json ./
-
-RUN npm install -g @angular/cli
-
-RUN npm install
-
-COPY . .
-
-RUN ng build --prod
+WORKDIR /crud-tuto-front
 
 EXPOSE 80
 
-CMD ["ng", "serve", "--host", "0.0.0.0", "--port", "80"]
+COPY dist/crudtuto-Front /usr/share/nginx/html
+
+CMD ["nginx", "-g", "daemon off;"]
+
