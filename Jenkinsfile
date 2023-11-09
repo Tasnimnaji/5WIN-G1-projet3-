@@ -1,16 +1,7 @@
 pipeline {
     agent any
-
-    environment {
-        NODEJS_VERSION = '14'
-        SONARQUBE_URL = 'http://192.168.33.10:9000'
-        SONAR_LOGIN = 'admin'
-        SONAR_PASSWORD = 'sonar'
-    }
-
     tools {
-        nodejs "nodejs-${NODEJS_VERSION}"
-        maven 'maven-3.8.4'
+        nodejs 'NodeJSInstaller'
     }
 
     stages {
@@ -26,7 +17,7 @@ pipeline {
         stage('MVN CLEAN') {
             steps {
                 dir('tpAchatProject') {
-                    sh './mvnw clean'
+                    sh 'mvn clean'
                 }
             }
         }
@@ -34,7 +25,7 @@ pipeline {
         stage('MVN COMPILE') {
             steps {
                 dir('tpAchatProject') {
-                    sh './mvnw compile'
+                    sh 'mvn compile'
                 }
             }
         }
@@ -42,7 +33,7 @@ pipeline {
         stage('MVN TEST') {
             steps {
                 dir('tpAchatProject') {
-                    sh './mvnw test'
+                    sh 'mvn test'
                 }
             }
         }
@@ -50,15 +41,15 @@ pipeline {
         stage('MVN DEPLOY') {
             steps {
                 dir('tpAchatProject') {
-                    sh './mvnw deploy'
+                    sh 'mvn deploy'
                 }
             }
         }
 
         stage('Build Frontend') {
             steps {
-                container('nodejs') {
-                    dir('crud-tuto-front') {
+                dir('crud-tuto-front') {
+                    script {
                         sh 'npm install'
                         sh 'ng build '
                     }
@@ -70,7 +61,7 @@ pipeline {
             steps {
                 dir('tpAchatProject') {
                     withSonarQubeEnv('SonarQube Scanner') {
-                        sh "mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar -Dsonar.host.url=${SONARQUBE_URL} -Dsonar.login=${SONAR_LOGIN} -Dsonar.password=${SONAR_PASSWORD}"
+                        sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar -Dsonar.host.url=http://192.168.33.10:9000 -Dsonar.login=admin -Dsonar.password=sonar'
                     }
                 }
             }
@@ -84,7 +75,8 @@ pipeline {
 
                     if (!imageExists) {
                         dir('tpAchatProject') {
-                            sh "docker build -t $dockerImage . && docker push $dockerImage"
+                            sh "docker build -t $dockerImage ."
+                            sh "docker push $dockerImage"
                         }
                     } else {
                         echo "Docker image $dockerImage already exists. Skipping the build and push steps."
@@ -94,19 +86,27 @@ pipeline {
             post {
                 success {
                     script {
+                        def subject = "Build & Push Docker Image (Backend)"
+                        def body = "The build was successful. Congratulations!"
+                        def to = 'tasnimneji93@gmail.com'
+
                         mail(
-                            subject: "Build & Push Docker Image (Backend)",
-                            body: "The build was successful. Congratulations!",
-                            to: 'tasnimneji93@gmail.com',
+                            subject: subject,
+                            body: body,
+                            to: to,
                         )
                     }
                 }
                 failure {
                     script {
+                        def subject = "Build Failure - ${currentBuild.fullDisplayName}"
+                        def body = "The build failed. Please check the console output for more details."
+                        def to = 'tasnimneji93@gmail.com'
+
                         mail(
-                            subject: "Build Failure - ${currentBuild.fullDisplayName}",
-                            body: "The build failed. Please check the console output for more details.",
-                            to: 'tasnimneji93@gmail.com',
+                            subject: subject,
+                            body: body,
+                            to: to,
                         )
                     }
                 }
@@ -121,7 +121,8 @@ pipeline {
 
                     if (!imageExists) {
                         dir('crud-tuto-front') {
-                            sh "docker build -t $dockerImage . && docker push $dockerImage"
+                            sh "docker build -t $dockerImage ."
+                            sh "docker push $dockerImage"
                         }
                     } else {
                         echo "Docker image $dockerImage already exists. Skipping the build and push steps."
@@ -143,14 +144,6 @@ pipeline {
                 script {
                     sh 'docker-compose -f docker-compose-prometheus.yml -f docker-compose-grafana.yml up -d'
                 }
-            }
-        }
-    }
-
-    post {
-        always {
-            script {
-                sh 'docker system prune -f'
             }
         }
     }
