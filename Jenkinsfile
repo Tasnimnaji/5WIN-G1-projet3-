@@ -1,6 +1,6 @@
 pipeline {
     agent any
-  tools {
+    tools {
         nodejs 'NodeJSInstaller'
     }
     stages {
@@ -13,7 +13,7 @@ pipeline {
             }
         }
 
-       stage('MVN CLEAN') {
+        stage('MVN CLEAN') {
             steps {
                 dir('tpAchatProject') {
                     sh 'mvn clean'
@@ -23,35 +23,38 @@ pipeline {
 
         stage('MVN COMPILE') {
             steps {
-               dir('tpAchatProject') {
+                dir('tpAchatProject') {
                     sh 'mvn compile'
                 }
-           }
+            }
         }
+
         stage('MVN TEST') {
-                    steps {
-                        dir('tpAchatProject') {
-                            sh 'mvn test'
-                        }
+            steps {
+                dir('tpAchatProject') {
+                    sh 'mvn test'
+                }
+            }
+        }
+
+        stage('MVN DEPLOY') {
+            steps {
+                dir('tpAchatProject') {
+                    sh 'mvn deploy'
+                }
+            }
+        }
+
+        stage('Build Frontend') {
+            steps {
+                dir('DevOps_Project_Front') {
+                    script {
+                        sh 'npm install'
+                        sh 'ng build '
                     }
                 }
-         stage('MVN DEPLOY') {
-                            steps {
-                                dir('tpAchatProject') {
-                                    sh 'mvn deploy'
-                                }
-                            }
-
-       stage('Build Frontend') {
-                   steps {
-                       dir('DevOps_Project_Front') {
-                           script {
-                               sh 'npm install'
-                               sh 'ng build '
-                           }
-                       }
-                   }
-       }
+            }
+        }
 
         stage('MVN SONARQUBE') {
             steps {
@@ -63,87 +66,84 @@ pipeline {
             }
         }
 
-         stage('Build & Push Docker Image (Backend)') {
-                    steps {
-                        script {
-                            def dockerImage = 'tasnimnaji99/tasnimnaji_5win_g1_pprojet3:tasnim'
-                            def imageExists = sh(script: "docker inspect --type=image $dockerImage", returnStatus: true) == 0
+        stage('Build & Push Docker Image (Backend)') {
+            steps {
+                script {
+                    def dockerImage = 'tasnimnaji99/tasnimnaji_5win_g1_pprojet3:tasnim'
+                    def imageExists = sh(script: "docker inspect --type=image $dockerImage", returnStatus: true) == 0
 
-                            if (!imageExists) {
-                                dir('tpAchatProject') {
-                                    sh "docker build -t $dockerImage ."
-                                    sh "docker push $dockerImage"
-                                }
-                            } else {
-                                echo "Docker image $dockerImage already exists. Skipping the build and push steps."
-                            }
+                    if (!imageExists) {
+                        dir('tpAchatProject') {
+                            sh "docker build -t $dockerImage ."
+                            sh "docker push $dockerImage"
                         }
+                    } else {
+                        echo "Docker image $dockerImage already exists. Skipping the build and push steps."
                     }
-                     post {
-                                    success {
-                                        script {
-                                            def subject = "Build & Push Docker Image (Backend)"
-                                            def body = "The build was successful. Congratulations!"
-                                            def to = 'tasnimneji93@gmail.com'
+                }
+            }
+            post {
+                success {
+                    script {
+                        def subject = "Build & Push Docker Image (Backend)"
+                        def body = "The build was successful. Congratulations!"
+                        def to = 'tasnimneji93@gmail.com'
 
-                                            mail(
-                                                subject: subject,
-                                                body: body,
-                                                to: to,
-                                            )
-                                        }
-                                    }
-                                    failure {
-                                                        script {
-                                                            def subject = "Build Failure - ${currentBuild.fullDisplayName}"
-                                                            def body = "The build failed. Please check the console output for more details."
-                                                            def to = 'tasnimneji93@gmail.com'
-
-                                                            mail(
-                                                                subject: subject,
-                                                                body: body,
-                                                                to: to,
-                                                            )
-                                                        }
-                                    }
-
-                     }
-         }
-
-         stage('Build & Push Docker Image (Frontend)') {
-                     steps {
-                         script {
-                             def dockerImage = 'tasnimnaji99/tasnimnaji_5win_g1_pprojet3:front'
-                             def imageExists = sh(script: "docker inspect --type=image $dockerImage", returnStatus: true) == 0
-
-                             if (!imageExists) {
-                                 dir('crud-tuto-front') {
-                                     sh "docker build -t $dockerImage ."
-                                     sh "docker push $dockerImage"
-                                 }
-                             } else {
-                                 echo "Docker image $dockerImage already exists. Skipping the build and push steps."
-                             }
-                         }
-                     }
-         }
-
-         stage('Deploy Back') {
-                    steps {
-                        script {
-                            sh 'docker-compose -f docker-compose.yml up -d'
-                        }
+                        mail(
+                            subject: subject,
+                            body: body,
+                            to: to,
+                        )
                     }
-         }
+                }
+                failure {
+                    script {
+                        def subject = "Build Failure - ${currentBuild.fullDisplayName}"
+                        def body = "The build failed. Please check the console output for more details."
+                        def to = 'tasnimneji93@gmail.com'
 
-        stage('Deploy Grafana and Prometheus') {
-                     steps {
-                         script {
-                             sh 'docker-compose -f docker-compose-prometheus.yml -f docker-compose-grafana.yml up -d'
-                         }
-                     }
+                        mail(
+                            subject: subject,
+                            body: body,
+                            to: to,
+                        )
+                    }
+                }
+            }
         }
 
+        stage('Build & Push Docker Image (Frontend)') {
+            steps {
+                script {
+                    def dockerImage = 'tasnimnaji99/tasnimnaji_5win_g1_pprojet3:front'
+                    def imageExists = sh(script: "docker inspect --type=image $dockerImage", returnStatus: true) == 0
+
+                    if (!imageExists) {
+                        dir('crud-tuto-front') {
+                            sh "docker build -t $dockerImage ."
+                            sh "docker push $dockerImage"
+                        }
+                    } else {
+                        echo "Docker image $dockerImage already exists. Skipping the build and push steps."
+                    }
+                }
+            }
+        }
+
+        stage('Deploy Back') {
+            steps {
+                script {
+                    sh 'docker-compose -f docker-compose.yml up -d'
+                }
+            }
+        }
+
+        stage('Deploy Grafana and Prometheus') {
+            steps {
+                script {
+                    sh 'docker-compose -f docker-compose-prometheus.yml -f docker-compose-grafana.yml up -d'
+                }
+            }
+        }
     }
-  }
-  }
+}
