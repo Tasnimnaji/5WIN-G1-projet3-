@@ -40,6 +40,16 @@ pipeline {
             }
         }
 
+        stage('MVN SONARQUBE') {
+                    steps {
+                        dir('tpAchatProject') {
+                            withSonarQubeEnv('SonarQube Scanner') {
+                                sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar -Dsonar.host.url=http://192.168.33.10:9000 -Dsonar.login=admin -Dsonar.password=sonar'
+                            }
+                        }
+                    }
+                }
+
         stage('MVN TEST') {
             steps {
                 dir('tpAchatProject') {
@@ -110,15 +120,7 @@ pipeline {
             }
         }*/
 
-        stage('MVN SONARQUBE') {
-            steps {
-                dir('tpAchatProject') {
-                    withSonarQubeEnv('SonarQube Scanner') {
-                        sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar -Dsonar.host.url=http://192.168.33.10:9000 -Dsonar.login=admin -Dsonar.password=sonar'
-                    }
-                }
-            }
-        }
+
 
         /*stage('Build & Push Docker Image (Backend)') {
             steps {
