@@ -48,13 +48,62 @@ pipeline {
             }
         }
 
-        stage('MVN DEPLOY') {
-            steps {
-                dir('tpAchatProject') {
-                    sh 'mvn deploy'
+                stage('Build Docker image') {
+                    steps {
+                        dir('tpAchatProject') {
+                            sh 'mvn clean package'
+                            sh 'docker login -u tasnimnaji99 -p mikasaeren99'
+                            sh 'docker build -t tasnimnaji99/tasnimnaji_5win_g1_projet3_back .'
+                        }
+                    }
                 }
+
+                stage('Push Docker image') {
+                    steps {
+                        sh 'docker login -u tasnimnaji99 -p mikasaeren99'
+                        sh 'docker push tasnimnaji99/tasnimnaji_5win_g1_projet3_back'
+                    }
+                }
+
+
+
+                stage('Deploy with Docker Compose') {
+                    steps {
+                        sh 'docker-compose -f docker-compose.yml up -d'
+                    }
+                    post {
+                                    success {
+                                        script {
+                                            def subject = "Build & Push Docker Image (Backend)"
+                                            def body = "The build was successful. Congratulations!"
+                                            def to = 'tasnimneji93@gmail.com'
+
+                                            mail(
+                                                subject: subject,
+                                                body: body,
+                                                to: to,
+                                            )
+                                        }
+                                    }
+                                    failure {
+                                        script {
+                                            def subject = "Build Failure - ${currentBuild.fullDisplayName}"
+                                            def body = "The build failed. Please check the console output for more details."
+                                            def to = 'tasnimneji93@gmail.com'
+
+                                            mail(
+                                                subject: subject,
+                                                body: body,
+                                                to: to,
+                                            )
+                                        }
+                                    }
+                                }
+                }
+
             }
         }
+
 
         /*stage('Build Frontend') {
             steps {
@@ -77,7 +126,7 @@ pipeline {
             }
         }
 
-        stage('Build & Push Docker Image (Backend)') {
+       /* stage('Build & Push Docker Image (Backend)') {
             steps {
                 script {
                     def dockerImage = 'tasnimnaji99/tasnimnaji_5win_g1_pprojet3:tasnim'
@@ -121,7 +170,7 @@ pipeline {
                     }
                 }
             }
-        }
+       }*/
 
         /*stage('Build & Push Docker Image (Frontend)') {
             steps {
@@ -141,13 +190,13 @@ pipeline {
             }
         }*/
 
-        stage('Deploy Back') {
+        /*stage('Deploy Back') {
             steps {
                 script {
                     sh 'docker-compose -f docker-compose.yml up -d'
                 }
             }
-        }
+        }*/
 
         stage('Deploy Grafana and Prometheus') {
             steps {
