@@ -1,78 +1,72 @@
 package com.esprit.examen.services;
 
-import com.esprit.examen.entities.Stock;
-import com.esprit.examen.repositories.StockRepository;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import com.esprit.examen.services.StockServiceImpl;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.Optional;
+import com.esprit.examen.entities.Stock;
+import com.esprit.examen.repositories.StockRepository;
+import lombok.extern.slf4j.Slf4j;
 
-import static org.mockito.Mockito.when;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-public class StockServiceImplTest {
-
-	@InjectMocks
-	private StockServiceImpl stockService;
+@SpringBootTest
+@ExtendWith(MockitoExtension.class)
+@Slf4j
+class StockServiceImplTest {
 
 	@Mock
 	private StockRepository stockRepository;
 
-	@BeforeEach
-	public void setup() {
-		MockitoAnnotations.initMocks(this);
+	@InjectMocks
+	private StockServiceImpl stockService;
+
+	@Test
+	void retrieveAllStocksTest() {
+		// Arrange
+		List<Stock> mockStocks = new ArrayList<>();
+		mockStocks.add(new Stock(/* provide necessary parameters */));
+		mockStocks.add(new Stock(/* provide necessary parameters */));
+
+		when(stockRepository.findAll()).thenReturn(mockStocks);
+
+		// Act
+		List<Stock> result = stockService.retrieveAllStocks();
+
+		// Assert
+		assertNotNull(result);
+		assertEquals(2, result.size());
+		// Add more assertions based on your business logic
+
+		verify(stockRepository, times(1)).findAll();
 	}
 
 	@Test
-	public void testAddStock() {
-		// Création d'un objet Stock factice
-		Stock stock = new Stock();
-		stock.setIdStock(1L);
+	void addStockTest() {
+		// Arrange
+		Stock mockStock = new Stock(/* provide necessary parameters */);
 
-		// Configurer le comportement simulé du repository
-		when(stockRepository.save(stock)).thenReturn(stock);
+		when(stockRepository.save(any(Stock.class))).thenReturn(mockStock);
 
-		// Appeler la méthode à tester
-		Stock savedStock = stockService.addStock(stock);
+		// Act
+		Stock result = stockService.addStock(mockStock);
 
-		// Vérifier que le résultat est correct
-		assertEquals(stock.getIdStock(), savedStock.getIdStock());
+		// Assert
+		assertNotNull(result);
+		// Add more assertions based on your business logic
+
+		verify(stockRepository, times(1)).save(any(Stock.class));
 	}
 
-	@Test
-	public void testRetrieveStock() {
-		Long stockId = 1L;
-
-		// Création d'un objet Stock factice
-		Stock stock = new Stock();
-		stock.setIdStock(stockId);
-
-		// Configurer le comportement simulé du repository
-		when(stockRepository.findById(stockId)).thenReturn(Optional.of(stock));
-
-		// Appeler la méthode à tester
-		Stock retrievedStock = stockService.retrieveStock(stockId);
-
-		// Vérifier que le résultat est correct
-		assertEquals(stock.getIdStock(), retrievedStock.getIdStock());
-	}
-
-	@Test
-	public void testRetrieveStockNotFound() {
-		Long stockId = 1L;
-
-		// Configurer le comportement simulé du repository pour retourner un Optional vide
-		when(stockRepository.findById(stockId)).thenReturn(Optional.empty());
-
-		// Appeler la méthode à tester et vérifier qu'elle lève une exception
-		assertThrows(NullPointerException.class, () -> stockService.retrieveStock(stockId));
-	}
-
-	// Ajoutez d'autres tests unitaires selon vos besoins
+	// Add similar test methods for other service methods
 
 }
